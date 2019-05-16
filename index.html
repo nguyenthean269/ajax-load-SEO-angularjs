@@ -1,0 +1,53 @@
+<html lang="en" >
+ 
+<body ng-app="MyApp" ng-controller="SelectHeaderController" ng-cloak>
+<h1 class="title">Origin title</h1>
+<h1 class="date">20/05</h1>
+<ul class="dtitems">
+  <li class="subitem">Item 1</li>
+  <li class="subitem">Item 2</li>
+  <li class="subitem">Item 3</li>
+  <li class="subitem">Item 4</li>
+  <li class="subitem">Item 5</li>
+  <li class="subitem">Item 6</li>
+</ul>
+<button ng-click="load($event)">Load</button>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.7/angular.js"></script>
+<script type="text/javascript">
+var replacementArray = {
+  "title":'{{title}}',
+  "date":'{{date}}',
+  "dtitems":'<li ng-repeat="x in items">{{x}}</li>'
+};
+var nextfix = 'Ajax';
+app = angular.module('MyApp', []);
+
+app.controller('SelectHeaderController', function($scope, $element, $compile) {
+  $scope.load = function($event) {
+    /* Assuming that data after ajax call below*/
+    $scope.title = "Replaced title";
+    $scope.date = "20/06";
+    $scope.items = ["Item a", "Item b", "Item c", "Item d"];
+
+
+    angular.forEach(replacementArray, function(key, value) {
+      var myEl = angular.element( document.querySelector('.'+value) );
+      myEl.addClass(value+nextfix);
+      $compile(myEl)($scope);
+    });
+  }
+});
+
+angular.forEach(replacementArray, function(key, value) {
+  app.directive(value+nextfix, function() {
+    return {
+      restrict: "C",
+      template: key
+    }
+  });
+});
+</script>
+</html>
+
